@@ -36,7 +36,7 @@ extension AVAudioSession {
 
   func setAudioSessionCategory() {
     do {
-      try setCategory(.playback, options: .mixWithOthers)
+    try setCategory(.ambient, options: [.mixWithOthers])
     } catch {
       print("Error setting audio session category: \(error)")
     }
