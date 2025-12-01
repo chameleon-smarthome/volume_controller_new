@@ -1,3 +1,6 @@
+## 3.4.1
+* Fix iOS audio session handling to prevent background music from pausing
+
 ## 3.4.0
 
 * Support Linux
