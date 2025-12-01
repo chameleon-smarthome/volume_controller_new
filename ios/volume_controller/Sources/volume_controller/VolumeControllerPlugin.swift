@@ -55,11 +55,12 @@ public class VolumeControllerPlugin: NSObject, FlutterPlugin {
 
 extension VolumeControllerPlugin: FlutterApplicationLifeCycleDelegate {
   public func applicationWillEnterForeground(_ application: UIApplication) {
+    guard VolumeControllerPlugin.volumeListener.isObservingVolume else {
+      return
+    }
+
     VolumeControllerPlugin.audioSession.setAudioSessionCategory()
     VolumeControllerPlugin.audioSession.activateAudioSession()
-
-    if VolumeControllerPlugin.volumeListener.isObservingVolume {
-      VolumeControllerPlugin.volumeListener.sendVolumeChangeEvent()
-    }
+    VolumeControllerPlugin.volumeListener.sendVolumeChangeEvent()
   }
 }
