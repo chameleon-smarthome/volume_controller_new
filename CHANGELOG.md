@@ -1,3 +1,7 @@
+## 3.5.0
+
+* Improve iOS/Android arguments parsing for volume change listener
+
 ## 3.4.4
 
 * Fix iOS 12 support issue

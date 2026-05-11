@@ -8,11 +8,16 @@ import android.media.AudioManager
 import io.flutter.plugin.common.EventChannel
 
 class VolumeListener(private val context: Context, private val audioManager: AudioManager) : EventChannel.StreamHandler {
-    private lateinit var volumeBroadcastReceiver: VolumeBroadcastReceiver
+    private var volumeBroadcastReceiver: VolumeBroadcastReceiver? = null
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
         val args = arguments as? Map<String, Any>
         val fetchInitialVolume = args?.get(EventArgument.FETCH_INITIAL_VOLUME) as? Boolean ?: false
+
+        volumeBroadcastReceiver?.let {
+            context.unregisterReceiver(it)
+            volumeBroadcastReceiver = null
+        }
 
         volumeBroadcastReceiver = VolumeBroadcastReceiver(events, audioManager)
         context.registerReceiver(volumeBroadcastReceiver, IntentFilter(VOLUME_CHANGED_ACTION))
@@ -23,7 +28,10 @@ class VolumeListener(private val context: Context, private val audioManager: Aud
     }
 
     override fun onCancel(arguments: Any?) {
-        context.unregisterReceiver(volumeBroadcastReceiver)
+        volumeBroadcastReceiver?.let {
+            context.unregisterReceiver(it)
+            volumeBroadcastReceiver = null
+        }
     }
 }
 

@@ -7,6 +7,13 @@ public class VolumeControllerPlugin: NSObject, FlutterPlugin {
   private static let volumeController = VolumeController(audioSession: audioSession)
   private static let volumeListener = VolumeListener(audioSession: audioSession)
 
+  private func invalidArgumentsResult() -> FlutterError {
+    FlutterError(
+      code: "invalid_arguments",
+      message: "Missing or invalid method arguments.",
+      details: nil)
+  }
+
   public static func register(with registrar: FlutterPluginRegistrar) {
     // Method Channel
     let methodChannel = FlutterMethodChannel(
@@ -38,8 +45,13 @@ public class VolumeControllerPlugin: NSObject, FlutterPlugin {
       let volume = arg?[MethodArgument.volume] as? Double
       let showSystemUI = arg?[MethodArgument.showSystemUI] as? Bool
 
+      guard let volume, let showSystemUI else {
+        result(invalidArgumentsResult())
+        return
+      }
+
       VolumeControllerPlugin.volumeController.setVolume(
-        volume: Float(volume!), showSystemUI: showSystemUI!)
+        volume: Float(volume), showSystemUI: showSystemUI)
       result(nil)
     case MethodName.isMuted:
       let isMuted = VolumeControllerPlugin.volumeController.isMuted()
@@ -49,7 +61,12 @@ public class VolumeControllerPlugin: NSObject, FlutterPlugin {
       let isMute = arg?[MethodArgument.isMute] as? Bool
       let showSystemUI = arg?[MethodArgument.showSystemUI] as? Bool
 
-      VolumeControllerPlugin.volumeController.setMute(isMute: isMute!, showSystemUI: showSystemUI!)
+      guard let isMute, let showSystemUI else {
+        result(invalidArgumentsResult())
+        return
+      }
+
+      VolumeControllerPlugin.volumeController.setMute(isMute: isMute, showSystemUI: showSystemUI)
       result(nil)
     default:
       result(FlutterMethodNotImplemented)
