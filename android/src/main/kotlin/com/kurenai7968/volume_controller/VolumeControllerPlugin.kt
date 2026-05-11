@@ -14,6 +14,10 @@ class VolumeControllerPlugin : FlutterPlugin, MethodCallHandler {
   private lateinit var methodChannel: MethodChannel
   private lateinit var eventChannel: EventChannel
 
+  private fun invalidArguments(result: Result) {
+    result.error("invalid_arguments", "Missing or invalid method arguments.", null)
+  }
+
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     val context = flutterPluginBinding.applicationContext
     val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -36,8 +40,13 @@ class VolumeControllerPlugin : FlutterPlugin, MethodCallHandler {
         result.success(volume)
       }
       MethodName.SET_VOLUME -> {
-        val volume: Double = call.argument(MethodArgument.VOLUME)!!
-        val showSystemUI: Boolean = call.argument(MethodArgument.SHOW_SYSTEM_UI)!!
+        val volume: Double? = call.argument(MethodArgument.VOLUME)
+        val showSystemUI: Boolean? = call.argument(MethodArgument.SHOW_SYSTEM_UI)
+
+        if (volume == null || showSystemUI == null) {
+          invalidArguments(result)
+          return
+        }
 
         volumeController.setVolume(volume, showSystemUI)
         result.success(null)
@@ -47,8 +56,13 @@ class VolumeControllerPlugin : FlutterPlugin, MethodCallHandler {
         result.success(isMute)
       }
       MethodName.SET_MUTE -> {
-        val isMute: Boolean = call.argument(MethodArgument.IS_MUTE)!!
-        val showSystemUI: Boolean = call.argument(MethodArgument.SHOW_SYSTEM_UI)!!
+        val isMute: Boolean? = call.argument(MethodArgument.IS_MUTE)
+        val showSystemUI: Boolean? = call.argument(MethodArgument.SHOW_SYSTEM_UI)
+
+        if (isMute == null || showSystemUI == null) {
+          invalidArguments(result)
+          return
+        }
 
         volumeController.setMute(isMute, showSystemUI)
         result.success(null)

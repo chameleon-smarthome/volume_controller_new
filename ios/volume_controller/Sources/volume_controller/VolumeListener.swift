@@ -21,8 +21,8 @@ public class VolumeListener: NSObject, FlutterStreamHandler {
   public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink)
     -> FlutterError?
   {
-    let args = arguments as! [String: Any]
-    let fetchInitialVolume = args[EventArgument.fetchInitialVolume] as! Bool
+    let args = arguments as? [String: Any]
+    let fetchInitialVolume = args?[EventArgument.fetchInitialVolume] as? Bool ?? false
 
     self.eventSink = events
     registerVolumeObserver()
