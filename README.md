@@ -3,11 +3,14 @@
 [![pub package](https://img.shields.io/pub/v/volume_controller.svg)](https://pub.dev/packages/volume_controller)
 [![license](https://img.shields.io/github/license/kurenai7968/volume_controller)](https://github.com/kurenai7968/volume_controller/blob/master/LICENSE)
 
-This plugin allows you to control and listen to the system volume on your device. It provides a simple API to get, set and monitor the system volume.
+Control and observe the system volume on Android, iOS, macOS, Windows, and Linux.
 
-## Notes
+## Requirements
 
-For iOS, you need to test on a real device as the simulator does not support volume control.
+- Flutter `>=3.38.0`
+- Dart `^3.10.0`
+
+The iOS plugin uses the scene lifecycle APIs introduced for Flutter plugins in Flutter 3.38.
 
 ## Supported Platforms
 
@@ -18,6 +21,12 @@ For iOS, you need to test on a real device as the simulator does not support vol
 | macOS    | ✅        |
 | Windows  | ✅        |
 | Linux    | ✅        |
+
+## Notes
+
+- iOS volume control must be tested on a real device. The simulator does not support system volume control.
+- `showSystemUI` is supported on Android and iOS only.
+- On Android and iOS, `isMuted()` treats volume `0` as muted, and `setMute(false)` restores the previous volume saved by the plugin.
 
 ## Variables
 
@@ -33,7 +42,7 @@ VolumeController.instance.showSystemUI = true;
 
 ### GetVolume
 
-Get the current volume from the system
+Get the current system volume.
 
 ```dart
 double volume = await VolumeController.instance.getVolume();
@@ -41,7 +50,7 @@ double volume = await VolumeController.instance.getVolume();
 
 ### SetVolume
 
-Set the system volume. The input is a double number in the range [0.0, 1.0].
+Set the system volume. The input should be in the range `0.0` to `1.0`.
 
 ```dart
 await VolumeController.instance.setVolume(double volume);
@@ -69,7 +78,7 @@ VolumeController.instance.removeListener();
 
 ### IsMuted
 
-Check if the system volume is muted. On iOS and Android, this checks if the volume level is equal to 0.
+Check whether the system is muted. On iOS and Android, this checks whether the volume level is `0`.
 
 ```dart
 bool isMuted = await VolumeController.instance.isMuted();
@@ -77,7 +86,7 @@ bool isMuted = await VolumeController.instance.isMuted();
 
 ### SetMute
 
-Mute or unmute the system volume. On iOS and Android, this sets the volume level to 0, and restores the previous volume level when unmuted.
+Mute or unmute the system volume. On iOS and Android, this sets the volume level to `0` and restores the previous volume level when unmuted.
 
 ```dart
 await VolumeController.instance.setMute(bool mute);
