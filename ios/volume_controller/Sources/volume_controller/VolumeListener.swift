@@ -28,7 +28,7 @@ public class VolumeListener: NSObject, FlutterStreamHandler {
     registerVolumeObserver()
 
     if fetchInitialVolume {
-      events(audioSession.getVolume())
+      emit(audioSession.getVolume(), with: events)
     }
 
     return nil
@@ -72,10 +72,18 @@ public class VolumeListener: NSObject, FlutterStreamHandler {
     guard keyPath == volumeKey else {
       return
     }
-    eventSink?(audioSession.getVolume())
+    emit(audioSession.getVolume())
   }
 
   public func sendVolumeChangeEvent() {
-    eventSink?(audioSession.getVolume())
+    emit(audioSession.getVolume())
+  }
+
+  private func emit(_ volume: Float, with sink: FlutterEventSink? = nil) {
+    let eventSink = sink ?? self.eventSink
+
+    DispatchQueue.main.async {
+      eventSink?(volume)
+    }
   }
 }

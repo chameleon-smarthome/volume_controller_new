@@ -19,7 +19,7 @@ public class VolumeListener: NSObject, FlutterStreamHandler {
     if fetchInitialVolume {
       let volume = AudioHelper.getVolume()
 
-      events(volume)
+      emit(volume, with: events)
     }
 
     return nil
@@ -88,6 +88,14 @@ public class VolumeListener: NSObject, FlutterStreamHandler {
   private func notifyVolumeChange() {
     let volume = AudioHelper.getVolume()
 
-    eventSink?(volume)
+    emit(volume)
+  }
+
+  private func emit(_ volume: Float, with sink: FlutterEventSink? = nil) {
+    let eventSink = sink ?? self.eventSink
+
+    DispatchQueue.main.async {
+      eventSink?(volume)
+    }
   }
 }
