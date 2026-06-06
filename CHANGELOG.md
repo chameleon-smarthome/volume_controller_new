@@ -1,3 +1,8 @@
+## 3.6.0
+
+* Update minimum supported SDKs to Flutter 3.44 and Dart 3.12
+* Android: Migrates to built-in Kotlin
+
 ## 3.5.0
 
 * Improve iOS/Android arguments parsing for volume change listener
